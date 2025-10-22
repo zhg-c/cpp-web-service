@@ -114,3 +114,80 @@ git commit -m "feat: Add C++ core, FastAPI backend, and complete documentation i
 
 # 5. 推送至远程仓库
 git push -u origin main
+
+
+## 🔒 本地仿真部署与持久化运行
+
+为了模拟生产环境和测试前后端在不同接口上的通信，我们在虚拟机上使用 Gunicorn/Nohup 进行了持久化部署。
+
+### 6. 配置防火墙 (允许外部访问)
+
+为了允许宿主机（物理机）通过 IP 地址访问虚拟机内部的 5173 (前端) 和 8000 (后端) 端口，需要配置 Kali 虚拟机的防火墙。
+
+```bash
+# 检查 ufw 是否安装
+sudo apt install ufw 
+
+# 允许 5173 和 8000 端口
+sudo ufw allow 5173/tcp
+sudo ufw allow 8000/tcp
+
+# 开启防火墙 (如果未开启)
+sudo ufw enable
+7. 持久化运行后端 API (生产模式)
+在本地测试环境中，我们使用 Gunicorn 和 nohup 来让后端服务在终端关闭后仍持续运行。
+
+Bash
+
+cd backend
+
+# 安装 Gunicorn (如果之前没有安装)
+pip install gunicorn
+
+# 使用 nohup 和 Gunicorn 启动服务，并绑定到所有外部接口 (0.0.0.0)
+nohup gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 &
+停止服务： 如果需要停止服务，请使用 ps aux | grep gunicorn 查找进程 PID，然后使用 kill <PID> 命令终止它。
+
+8. 宿主机访问配置（Vite Host 绑定）
+为了让宿主机（物理机）能通过虚拟机的 IP 访问前端服务，需要配置 Vite 监听所有网络接口。
+
+修改 frontend/vite.config.ts：
+
+在 export default defineConfig(...) 中添加或修改 server 配置：
+
+TypeScript
+
+// ... 其他配置 ...
+  server: {
+    host: '0.0.0.0', // 允许通过 IP 地址访问
+    port: 5173,      
+  }
+// ...
+9. 访问与验证
+完成以上所有步骤后：
+
+查找虚拟机 IP： 在 Kali 终端运行 ip a，找到你的虚拟机 IP (例如 192.168.x.x)。
+
+访问： 在宿主机浏览器中，通过 IP 访问前端：
+
+http://[你的虚拟机IP]:5173/
+
+验证： 点击前端按钮，检查后端 Gunicorn 的 nohup.out 日志和浏览器网络请求，确认请求能够成功从 5173 发送到 8000 端口并获得 C++ 计算结果。
+
+步骤 2: 提交更改到远程仓库
+现在，将更新后的 README.md 文件提交到远程 Git 仓库：
+
+Bash
+
+# 确保在项目根目录
+cd ~/cpp-web-service
+
+# 1. 添加更新后的 README 文件
+git add README.md
+git add frontend/vite.config.ts # 如果你修改了 vite.config.ts 也应该添加
+
+# 2. 提交更改
+git commit -m "docs: Add local emulation deployment and persistence steps to README"
+
+# 3. 推送至远程仓库 (使用你之前设置的正确分支名，例如 main)
+git push
