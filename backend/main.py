@@ -1,5 +1,5 @@
 # backend/main.py
-from fastapi import FastAPI,File,UploadFile
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import sys
@@ -33,34 +33,21 @@ app.add_middleware(
 def read_root():
     return {"message": "C++ Backend API is running."}
 
-# 4. C++ 驱动的图片处理 API 路由
-@app.post("/api/optimize")
-async def optimize_image(image_file: UploadFile = File(...)):
+# 5. C++ 计算 API 路由
+@app.get("/api/calculate")
+def calculate_fibonacci(n: int = 10):
     """
-    接收图片文件，通过 Python 调用 C++ 核心函数生成优化/占位符图片。
+    通过 Python 调用 C++ 核心函数计算斐波那契数列第 n 位。
     """
-    try:
-        # 1. 从上传的文件中异步读取原始字节数据
-        original_bytes = await image_file.read()
+    if n > 93:
+        # 避免 C++ long long 溢出
+        return {"error": "Input N is too large for long long calculation."}
         
-        # 2. ✨ 核心步骤：调用 C++ 函数
-        # 注意：libcore.generate_placeholder 期望 bytes 或 list[int]
-        # Pybind11 自动将 Python bytes 转换为 std::vector<unsigned char>
-        processed_data = libcore.generate_placeholder(original_bytes)
-        
-        # 3. 将 C++ 返回的字节数据解码为字符串进行验证（正式环境应返回图片）
-        # 只有在测试阶段我们才解码为字符串
-        response_message = processed_data.decode('utf-8')
-
-        return {
-            "filename": image_file.filename,
-            "original_size": len(original_bytes),
-            "status": "success",
-            "c_plus_plus_log": response_message # 返回 C++ 核心的反馈信息
-        }
-
-    except ImportError as e:
-        return {"error": f"C++ Core (libcore.so) import failed: {e}"}
-    except Exception as e:
-        # 如果 C++ 内部出错或文件读取出错
-        return {"error": f"Processing failed: {e}"}
+    # ✨ 核心步骤：调用 C++ 函数
+    result = libcore.fibonacci(n)
+    
+    return {
+        "n": n,
+        "result": str(result), # 将大数字转为字符串避免 JSON 精度问题
+        "source": "C++ Core"
+    }

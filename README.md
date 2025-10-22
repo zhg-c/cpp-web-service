@@ -250,3 +250,6 @@ source .venv/bin/activate
 
 # 安装 Python 依赖
 pip install fastapi uvicorn python-multipart pybind11 gunicorn
+
+# 这是调试时的命令
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
