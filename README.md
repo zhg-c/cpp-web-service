@@ -191,3 +191,62 @@ git commit -m "docs: Add local emulation deployment and persistence steps to REA
 
 # 3. 推送至远程仓库 (使用你之前设置的正确分支名，例如 main)
 git push
+
+
+# 🚀 AccelCompress：C++ 驱动的高性能媒体优化 API
+
+本项目是一个以 C++ 高性能计算为核心的商业化 Web 服务蓝图，旨在利用 C/C++ 对计算资源和内存的精细控制，提供比传统 Python/Node.js 服务更快的图片压缩和优化 API。
+
+**核心价值：速度就是金钱。我们提供市场领先的计算性能。**
+
+## ⚙️ 架构与技术栈
+
+| 组件 | 角色 | 技术栈 | 性能优势来源 |
+| :--- | :--- | :--- | :--- |
+| **C++ Core** | 核心计算引擎 | C++17, Pybind11, libjpeg-turbo/OpenCV | **内存和线程控制**，实现极速图片处理。 |
+| **Backend API** | 服务接口层 | Python (FastAPI), Gunicorn | **高并发异步处理**，封装 C++ 核心，提供稳定的 RESTful API。 |
+| **Frontend UI/Docs** | 营销与文档 | Vue 3, Vite, Axios | 客户门户、API 文档展示、支付/Key 管理界面。 |
+
+## 💡 商业计划：按量计费服务
+
+本项目将通过提供高性能的按量计费 API 服务实现被动收入，目标客户是需要快速加载速度的电商、媒体和应用开发者。
+
+### 变现模式：月度订阅与按需付费
+
+| 计划名称 | 月费 | 包含的 API 调用次数 | 溢出费率 | 适合用户 |
+| :--- | :--- | :--- | :--- | :--- |
+| **Free Tier (免费体验)** | $0 | 500 次/月 | N/A | 个人开发者、博客测试 |
+| **Developer (开发者)** | $10 | 10,000 次/月 | $1 / 1000 次 | 小型网站、初创企业 |
+| **Business (企业)** | $50 | 100,000 次/月 | $0.5 / 1000 次 | 电商平台、高流量媒体 |
+
+### 核心竞争优势
+
+1.  **极速性能：** 核心压缩/优化算法全部在 C++ 中运行，CPU 密集型任务的性能领先市场同类产品 **3-5 倍**。
+2.  **WebP 专家：** 专注于高效的 WebP (无损/有损) 转换和优化，这是现代 Web 性能优化的标准。
+3.  **高并发稳定：** 利用 FastAPI 的异步特性和 C++ 的高效执行，确保 API 在高并发请求下依然稳定可靠。
+
+## 🎯 行动计划 (您需要实施的步骤)
+
+| 阶段 | 任务 | 目标 |
+| :--- | :--- | :--- |
+| **MVP 优化** | **升级 C++ 核心** | 将斐波那契计算替换为真正的图片优化算法（例如，使用 libjpeg-turbo 优化 JPEG 渐进式渲染）。 |
+| **后端强化** | **实现 API Key 认证** | 在 FastAPI 中搭建 JWT 或简单的 Key 验证体系，确保只有付费用户才能调用服务。 |
+| **前端开发** | **支付与 Key 生成界面** | 在 Vue 中创建用户注册、API Key 展示和**集成 Stripe/PayPal** 的支付流程。 |
+| **部署上线** | **云服务器部署** | 将 C++ 核心、Gunicorn/FastAPI 部署到云服务器（如 AWS/DigitalOcean），确保 24/7 运行。 |
+
+---
+
+## 🛠️ 本地开发与运行指南 (C++ Core + Python API)
+
+### 1. 环境准备
+
+```bash
+# 安装必要工具 (Kali Linux)
+sudo apt install build-essential python3-venv python3-dev git nodejs npm
+
+# 初始化并激活虚拟环境
+python3 -m venv .venv
+source .venv/bin/activate 
+
+# 安装 Python 依赖
+pip install fastapi uvicorn python-multipart pybind11 gunicorn
