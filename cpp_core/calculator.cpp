@@ -142,11 +142,27 @@ std::vector<unsigned char> optimize_jpeg(
 }
 
 // --- Pybind11 模块定义 ---
+// cpp_core/calculator.cpp
+
 PYBIND11_MODULE(libcore, m) {
     m.doc() = "AccelCompress C++ core for high-performance JPEG optimization."; 
 
-    m.def("optimize_jpeg", &optimize_jpeg, 
-          "Optimizes a JPEG file's bytes by re-encoding with a target quality.",
-          py::arg("image_bytes"),
-          py::arg("quality") = 80); // 默认质量参数
+    // ✨ 最终修复：使用 py::bytes 接收输入，消除输入参数的类型歧义
+    m.def("optimize_jpeg", [](py::bytes image_bytes_py, int quality) {
+        
+        // 1. 将 Python bytes 显式转换为 C++ std::vector<unsigned char>
+        //    通过 py::bytes 的方法获取数据的原始指针和大小
+        std::string buffer = image_bytes_py.cast<std::string>();
+        std::vector<unsigned char> image_bytes_cpp(buffer.begin(), buffer.end());
+
+        // 2. 调用 C++ 实际函数
+        // 注意：这里需要调用你原来在 calculator.cpp 中定义的 C++ 函数
+        std::vector<unsigned char> result = optimize_jpeg(image_bytes_cpp, quality);
+        
+        // 3. 显式将 C++ 字节向量转换为 Python bytes
+        return py::bytes((const char*)result.data(), result.size());
+    },
+    "Optimizes a JPEG file's bytes by re-encoding with a target quality.",
+    py::arg("image_bytes"),
+    py::arg("quality") = 80);
 }
