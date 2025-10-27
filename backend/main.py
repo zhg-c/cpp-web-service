@@ -26,10 +26,16 @@ origins = ["http://localhost", "http://localhost:5173", "http://127.0.0.1:5173",
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # 允许所有来源，在生产环境请具体指定域名
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # 允许所有方法 (GET, POST, etc.)
+    allow_headers=["*"],  # 允许所有请求头
+    # 💥 关键点在这里！
+    expose_headers=[
+        "X-Original-Size",  # 必须列出所有要暴露的自定义头
+        "X-Optimized-Size",
+        "X-Compression-Ratio",
+    ],
 )
 
 
