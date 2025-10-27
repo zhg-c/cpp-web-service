@@ -6,11 +6,11 @@
 
 ## ⚙️ 架构概览
 
-| 组件 | 端口 | 技术栈 | 职责 |
-| :--- | :--- | :--- | :--- |
-| **C++ Core** | N/A | C++17, Pybind11 | 核心高性能计算（libcore.so 动态库） |
+| 组件            | 端口   | 技术栈                    | 职责                                                            |
+| :-------------- | :----- | :------------------------ | :-------------------------------------------------------------- |
+| **C++ Core**    | N/A    | C++17, Pybind11           | 核心高性能计算（libcore.so 动态库）                             |
 | **Backend API** | `8000` | Python (FastAPI), Uvicorn | 接收 HTTP 请求，通过 Pybind11 调用 C++ 核心，并返回 JSON 结果。 |
-| **Frontend UI** | `5173` | Vue 3, Vite, Axios | 用户界面展示，向后端 API (8000 端口) 发起请求并渲染结果。 |
+| **Frontend UI** | `5173` | Vue 3, Vite, Axios        | 用户界面展示，向后端 API (8000 端口) 发起请求并渲染结果。       |
 
 ## 🚀 本地开发环境设置 (Kali Linux)
 
@@ -20,13 +20,13 @@
 
 确保您的系统安装了以下依赖：
 
-* `git`
-* `python3`, `python3-pip`
-* `g++` (C++ 编译器)
-* `python3-dev` (包含 C++ 编译所需的 `Python.h` 头文件)
-* `node` 和 `npm` (用于前端)
+- `git`
+- `python3`, `python3-pip`
+- `g++` (C++ 编译器)
+- `python3-dev` (包含 C++ 编译所需的 `Python.h` 头文件)
+- `node` 和 `npm` (用于前端)
 
-```bash
+````bash
 # 安装 C++ 编译所需包和 Python venv 工具
 sudo apt update
 sudo apt install build-essential python3-venv python3-dev
@@ -41,7 +41,7 @@ cd ~/cpp-web-service
 
 # 2. 创建虚拟环境并激活 (重要!)
 python3 -m venv .venv
-source .venv/bin/activate 
+source .venv/bin/activate
 
 # 3. 安装 Python 依赖 (在激活的虚拟环境中)
 pip install fastapi uvicorn python-multipart pybind11
@@ -85,7 +85,7 @@ Bash
 cd ~/cpp-web-service/frontend
 
 # 1. 检查和安装 Node.js 依赖 (如果 package.json 丢失，请重新 vite 初始化)
-npm install 
+npm install
 npm install axios
 
 # 2. 运行前端
@@ -126,7 +126,7 @@ git push -u origin main
 
 ```bash
 # 检查 ufw 是否安装
-sudo apt install ufw 
+sudo apt install ufw
 
 # 允许 5173 和 8000 端口
 sudo ufw allow 5173/tcp
@@ -160,7 +160,7 @@ TypeScript
 // ... 其他配置 ...
   server: {
     host: '0.0.0.0', // 允许通过 IP 地址访问
-    port: 5173,      
+    port: 5173,
   }
 // ...
 9. 访问与验证
@@ -246,10 +246,24 @@ sudo apt install build-essential python3-venv python3-dev git nodejs npm
 
 # 初始化并激活虚拟环境
 python3 -m venv .venv
-source .venv/bin/activate 
+source .venv/bin/activate
 
 # 安装 Python 依赖
 pip install fastapi uvicorn python-multipart pybind11 gunicorn
 
 # 这是调试时的命令
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+
+使用 Network: http://192.168.10.106:5173/ 地址访问，设置如下：
+在vite.config.ts设置服务和端口
+export default defineConfig({
+  plugins: [vue()],
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+  },
+});
+将 端口 在防火墙设置为允许
+sudo ufw allow 3333/tcp
+````
